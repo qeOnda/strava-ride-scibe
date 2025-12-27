@@ -4,5 +4,3 @@ terraform.tfstate.backup
 .terraform/
 .DS_Store
 node_modules/
-*.js
-*.zip

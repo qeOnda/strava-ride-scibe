@@ -4,10 +4,11 @@
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
-    "build": "tsc"
+    "build": "esbuild index.ts --bundle --minify --platform=node --target=es2020 --outdir=dist/"
   },
   "devDependencies": {
     "@types/node": "^20.11.30",
+    "esbuild": "0.27.2",
     "typescript": "^5.9.3"
   }
 }

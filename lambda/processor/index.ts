@@ -10,8 +10,8 @@ import {
 import { decrypt, encrypt } from "encryption";
 
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
-import { SQSEvent } from "aws-lambda";
 import { refreshStravaOAuth } from "api-helper";
+import { SQSEvent } from "aws-lambda";
 
 const SECRET_KEY_HEX = process.env.SECRE_KEY_HEX || "";
 const TABLE_NAME = process.env.TABLE_NAME || "";

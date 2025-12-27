@@ -22,7 +22,7 @@ resource "terraform_data" "bootstrap_lib_encryption" {
       cd ${path.module}/../lib/encryption && \
       npm run build && \
       mkdir -p ${path.module}/../../lib/lambda-layer/nodejs/node20/node_modules/encryption && \
-      cp -r . ${path.module}/../../lib/lambda-layer/nodejs/node20/node_modules/encryption/
+      cp -r dist/. ${path.module}/../../lib/lambda-layer/nodejs/node20/node_modules/encryption/
     EOT
   }
 }
@@ -37,7 +37,7 @@ resource "terraform_data" "bootstrap_lib_api_helper" {
       cd ${path.module}/../lib/api-helper && \
       npm run build && \
       mkdir -p ${path.module}/../../lib/lambda-layer/nodejs/node20/node_modules/api-helper && \
-      cp -r . ${path.module}/../../lib/lambda-layer/nodejs/node20/node_modules/api-helper/
+      cp -r dist/. ${path.module}/../../lib/lambda-layer/nodejs/node20/node_modules/api-helper/
     EOT
   }
 }
@@ -66,7 +66,8 @@ resource "terraform_data" "bootstrap_processor_lambda" {
 }
 
 data "archive_file" "proxy_lambda_handler" {
-  type        = "zip"
+  type = "zip"
+
   source_dir  = "${path.module}/../lambda/proxy/dist"
   output_path = "${path.module}/../lambda/proxy/handler.zip"
 
@@ -76,7 +77,7 @@ data "archive_file" "proxy_lambda_handler" {
 data "archive_file" "processor_lambda_handler" {
   type = "zip"
 
-  source_dir  = "${path.module}/../lambda/processor"
+  source_dir  = "${path.module}/../lambda/processor/dist"
   output_path = "${path.module}/../lambda/processor/handler.zip"
 
   depends_on = [terraform_data.bootstrap_processor_lambda]
@@ -135,7 +136,8 @@ resource "aws_s3_object" "proxy_lambda_handler_zip" {
   key    = "handler.zip"
   source = data.archive_file.proxy_lambda_handler.output_path
 
-  etag = filemd5(data.archive_file.proxy_lambda_handler.output_path)
+  depends_on  = [data.archive_file.proxy_lambda_handler]
+  source_hash = data.archive_file.proxy_lambda_handler.output_base64sha256
 }
 
 resource "aws_s3_object" "processor_lambda_handler_zip" {
@@ -144,7 +146,8 @@ resource "aws_s3_object" "processor_lambda_handler_zip" {
   key    = "handler.zip"
   source = data.archive_file.processor_lambda_handler.output_path
 
-  etag = filemd5(data.archive_file.processor_lambda_handler.output_path)
+  depends_on  = [data.archive_file.processor_lambda_handler]
+  source_hash = data.archive_file.processor_lambda_handler.output_base64sha256
 }
 
 

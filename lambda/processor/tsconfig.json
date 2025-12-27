@@ -54,12 +54,8 @@
     "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
     "baseUrl": ".",
     "paths": {
-      "encryption": [
-        "../../lib/lambda-layer/nodejs/node20/node_modules/encryption/index.ts"
-      ],
-      "api-helper": [
-        "../../lib/lambda-layer/nodejs/node20/node_modules/api-helper/index.ts"
-      ],
+      "encryption": ["../../lib/encryption/index.ts"],
+      "api-helper": ["../../lib/api-helper/index.ts"],
       "@aws-sdk/client-sqs": [
         "../../lib/lambda-layer/nodejs/node20/node_modules/@aws-sdk/client-sqs"
       ],

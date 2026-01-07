@@ -1,0 +1,20 @@
+{
+  "name": "processor-handler",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "prebuild": "rm -rf dist",
+    "build": "esbuild index.ts --bundle --minify --platform=node --target=es2020 --external:api-helper --external:@aws-sdk/lib-dynamodb --external:@aws-sdk/client-dynamodb --external:@aws-sdk/client-sqs --external:encryption --outdir=dist/"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "esbuild": "0.27.2",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.941.0"
+  }
+}

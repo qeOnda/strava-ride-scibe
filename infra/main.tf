@@ -157,6 +157,31 @@ resource "aws_apigatewayv2_route" "oauth_authentication" {
   target    = "integrations/${aws_apigatewayv2_integration.proxy_lambda_handler_function.id}"
 }
 
+resource "aws_api_gateway_method_settings" "all" {
+  rest_api_id = aws_apigatewayv2_api.lambda.id
+  stage_name  = aws_apigatewayv2_stage.lambda.name
+  method_path = "*/*"
+
+  settings {
+    throttling_rate_limit  = 100
+    throttling_burst_limit = 200
+  }
+}
+
+resource "aws_api_gateway_usage_plan" "main" {
+  name = "strava-ride-scribe-usage-plan"
+
+  throttle_settings {
+    rate_limit  = 100
+    burst_limit = 200
+  }
+
+  quota_settings {
+    limit  = 10000
+    period = "DAY"
+  }
+}
+
 resource "aws_lambda_permission" "api_gw" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
@@ -258,7 +283,7 @@ resource "aws_lambda_event_source_mapping" "example" {
 }
 
 resource "aws_dynamodb_table" "strava_descriptions_table" {
-  name         = "StavaDescriptions"
+  name         = "StravaDescriptions"
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "UserId"
   range_key    = "SK"
@@ -333,8 +358,8 @@ resource "aws_iam_role_policy" "bedrock_access" {
     Version = "2012-10-17",
     Statement = [{
       Effect   = "Allow",
-      Action   = ["bedrock:InvokeModel", "aws-marketplace:ViewSubscriptions", "aws-marketplace:Subscribe"],
-      Resource = "*"
+      Action   = ["bedrock:InvokeModel"],
+      Resource = "arn:aws:bedrock:${var.aws_region}::foundation-model/${var.aws_bedrock_model_id}"
     }]
   })
 }

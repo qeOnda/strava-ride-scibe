@@ -283,7 +283,7 @@ resource "aws_lambda_event_source_mapping" "example" {
 }
 
 resource "aws_dynamodb_table" "strava_descriptions_table" {
-  name         = "StavaDescriptions"
+  name         = "StravaDescriptions"
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "UserId"
   range_key    = "SK"

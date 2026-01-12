@@ -333,8 +333,8 @@ resource "aws_iam_role_policy" "bedrock_access" {
     Version = "2012-10-17",
     Statement = [{
       Effect   = "Allow",
-      Action   = ["bedrock:InvokeModel", "aws-marketplace:ViewSubscriptions", "aws-marketplace:Subscribe"],
-      Resource = "*"
+      Action   = ["bedrock:InvokeModel"],
+      Resource = "arn:aws:bedrock:${var.aws_region}::foundation-model/${var.aws_bedrock_model_id}"
     }]
   })
 }

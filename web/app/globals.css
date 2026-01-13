@@ -1,0 +1,160 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Premium Wellness Color Palette */
+    --pearl-white: #FAFAFA;
+    --snow: #FFFFFF;
+    --warm-ivory: #F5F3F0;
+    --mist: #E8E6E3;
+    --cream: #F0EDE8;
+
+    --charcoal: #1A1A1A;
+    --slate: #4A4A4A;
+    --stone: #6B6B6B;
+    --pebble: #9B9B9B;
+
+    --sage: #5B8C7D;
+    --sage-light: #7BA696;
+    --sage-dark: #4A7366;
+    --terracotta: #C27B5F;
+
+    /* Typography */
+    --font-display: 'Outfit', system-ui, sans-serif;
+    --font-body: 'Inter', 'SF Pro Text', system-ui, sans-serif;
+
+    /* Spacing */
+    --section-padding: 8rem;
+    --container-padding: 2rem;
+    --container-max: 72rem;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-pearl-white text-slate antialiased;
+    font-family: var(--font-body);
+    font-weight: 400;
+    line-height: 1.6;
+  }
+
+  /* Typography Base Styles */
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    @apply text-charcoal;
+  }
+
+  h1 {
+    @apply font-bold;
+  }
+
+  h2 {
+    @apply font-semibold;
+  }
+
+  h3 {
+    font-family: var(--font-body);
+    @apply font-semibold;
+  }
+}
+
+@layer components {
+  /* Container */
+  .container {
+    max-width: var(--container-max);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--container-padding);
+    padding-right: var(--container-padding);
+  }
+
+  /* Eyebrow Text */
+  .eyebrow {
+    font-family: var(--font-body);
+    @apply text-xs font-medium tracking-widest uppercase text-sage;
+  }
+
+  /* Body Large */
+  .body-lg {
+    @apply text-lg leading-relaxed;
+  }
+
+  /* Primary Button */
+  .btn-primary {
+    @apply inline-flex items-center gap-3 bg-sage text-white
+           font-medium text-base px-8 py-4 rounded-full
+           transition-colors duration-300;
+  }
+
+  .btn-primary:hover {
+    @apply bg-sage-dark;
+  }
+
+  /* Secondary Button (inverted) */
+  .btn-secondary {
+    @apply inline-flex items-center gap-3 bg-white text-sage
+           font-medium text-base px-8 py-4 rounded-full
+           transition-all duration-300;
+  }
+
+  .btn-secondary:hover {
+    @apply bg-cream shadow-medium;
+  }
+
+  /* Card */
+  .card {
+    @apply bg-warm-ivory rounded-2xl p-8
+           transition-all duration-300;
+  }
+
+  .card:hover {
+    @apply -translate-y-1 shadow-medium;
+  }
+
+  /* Section */
+  .section {
+    padding-top: var(--section-padding);
+    padding-bottom: var(--section-padding);
+  }
+
+  /* Icon Container */
+  .icon-container {
+    @apply w-12 h-12 rounded-full bg-sage/10 flex items-center justify-center;
+  }
+}
+
+@layer utilities {
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* Subtle keyframe animations */
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

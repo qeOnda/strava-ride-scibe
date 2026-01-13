@@ -20,7 +20,7 @@ resource "terraform_data" "bootstrap_lib_encryption" {
   provisioner "local-exec" {
     command = <<-EOT
       cd ${path.module}/../lib/encryption && \
-      npm run build && \
+      npm install && npm run build && \
       mkdir -p ${path.module}/../../lib/lambda-layer/nodejs/node20/node_modules/encryption && \
       cp -r dist/. ${path.module}/../../lib/lambda-layer/nodejs/node20/node_modules/encryption/
     EOT
@@ -35,7 +35,7 @@ resource "terraform_data" "bootstrap_lib_api_helper" {
   provisioner "local-exec" {
     command = <<-EOT
       cd ${path.module}/../lib/api-helper && \
-      npm run build && \
+      npm install && npm run build && \
       mkdir -p ${path.module}/../../lib/lambda-layer/nodejs/node20/node_modules/api-helper && \
       cp -r dist/. ${path.module}/../../lib/lambda-layer/nodejs/node20/node_modules/api-helper/
     EOT
@@ -49,7 +49,7 @@ resource "terraform_data" "bootstrap_proxy_lambda" {
   ]
 
   provisioner "local-exec" {
-    command     = "npm run build"
+    command     = "npm install && npm run build"
     working_dir = "${path.module}/../lambda/proxy"
   }
 }
@@ -60,7 +60,7 @@ resource "terraform_data" "bootstrap_processor_lambda" {
   ]
 
   provisioner "local-exec" {
-    command     = "npm run build"
+    command     = "npm install && npm run build"
     working_dir = "${path.module}/../lambda/processor"
   }
 }

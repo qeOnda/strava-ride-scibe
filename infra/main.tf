@@ -116,6 +116,11 @@ resource "aws_apigatewayv2_stage" "lambda" {
   name        = "prod"
   auto_deploy = true
 
+  default_route_settings {
+    throttling_rate_limit  = 100
+    throttling_burst_limit = 200
+  }
+
   access_log_settings {
     destination_arn = aws_cloudwatch_log_group.api_gw.arn
 
@@ -155,17 +160,6 @@ resource "aws_apigatewayv2_route" "oauth_authentication" {
 
   route_key = "POST /oauth-authentication"
   target    = "integrations/${aws_apigatewayv2_integration.proxy_lambda_handler_function.id}"
-}
-
-resource "aws_api_gateway_method_settings" "all" {
-  rest_api_id = aws_apigatewayv2_api.lambda.id
-  stage_name  = aws_apigatewayv2_stage.lambda.name
-  method_path = "*/*"
-
-  settings {
-    throttling_rate_limit  = 100
-    throttling_burst_limit = 200
-  }
 }
 
 resource "aws_api_gateway_usage_plan" "main" {

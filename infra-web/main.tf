@@ -1,5 +1,6 @@
 resource "aws_s3_bucket" "web" {
-  bucket = "web-${var.project_name}"
+  bucket        = "web-${var.project_name}"
+  force_destroy = true
 }
 
 resource "aws_s3_bucket_website_configuration" "web" {

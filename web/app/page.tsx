@@ -1,39 +1,33 @@
-'use client'
+"use client";
 
-import { motion } from 'framer-motion'
-import {
-  Zap,
-  Brain,
-  Shield,
-  Cloud,
-  Sliders,
-  BarChart3,
-  ArrowRight,
-  Check,
-} from 'lucide-react'
+import { ArrowRight, Check } from "lucide-react";
 
-const STRAVA_CLIENT_ID = process.env.NEXT_PUBLIC_STRAVA_CLIENT_ID || 'YOUR_STRAVA_CLIENT_ID'
-const REDIRECT_URI = process.env.NEXT_PUBLIC_REDIRECT_URI || 'YOUR_API_GATEWAY_URL/oauth-authentication'
+import { motion } from "framer-motion";
 
-const oauthUrl = `https://www.strava.com/oauth/authorize?client_id=${STRAVA_CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&approval_prompt=force&scope=activity:write,activity:read_all`
+const STRAVA_CLIENT_ID = process.env.NEXT_PUBLIC_STRAVA_CLIENT_ID;
+const REDIRECT_URI = process.env.NEXT_PUBLIC_REDIRECT_URI || "";
+
+const oauthUrl = `https://www.strava.com/oauth/authorize?client_id=${STRAVA_CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(
+  REDIRECT_URI
+)}&approval_prompt=force&scope=activity:write,activity:read_all`;
 
 // Refined animation variants - subtle and elegant
 const fadeIn = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] as const }
-  }
-}
+    transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] as const },
+  },
+};
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] as const }
-  }
-}
+    transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] as const },
+  },
+};
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -41,73 +35,38 @@ const staggerContainer = {
     opacity: 1,
     transition: {
       staggerChildren: 0.1,
-      delayChildren: 0.1
-    }
-  }
-}
+      delayChildren: 0.1,
+    },
+  },
+};
 
 const scaleIn = {
   hidden: { opacity: 0, scale: 0.98 },
   visible: {
     opacity: 1,
     scale: 1,
-    transition: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] as const }
-  }
-}
+    transition: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] as const },
+  },
+};
 
 const steps = [
   {
-    title: 'Connect once',
-    desc: 'Secure OAuth authentication with your Strava account. Takes 30 seconds.',
+    title: "Connect once",
+    desc: "Secure OAuth authentication with your Strava account. Takes 30 seconds.",
   },
   {
-    title: 'Ride as usual',
-    desc: 'No workflow changes needed. Just enjoy your rides.',
+    title: "Ride as usual",
+    desc: "No workflow changes needed. Just enjoy your rides.",
   },
   {
-    title: 'AI analyzes',
-    desc: 'Distance, elevation, pace, and conditions are processed automatically.',
+    title: "AI analyzes",
+    desc: "Distance, elevation, pace, and conditions are processed automatically.",
   },
   {
-    title: 'Story appears',
-    desc: 'A personalized description updates on Strava within seconds.',
+    title: "Description updated`",
+    desc: "A personalized description updates on Strava within seconds.",
   },
-]
-
-const features = [
-  {
-    Icon: Zap,
-    title: 'Fully automatic',
-    desc: 'Set it once and never think about it again. Every ride gets a unique, personalized story.',
-    image: 'https://images.unsplash.com/photo-1615387362883-bc09da7b4c0c?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    Icon: Brain,
-    title: 'Context-aware AI',
-    desc: 'Analyzes metrics, weather, and route characteristics to craft meaningful narratives.',
-  },
-  {
-    Icon: Shield,
-    title: 'Enterprise security',
-    desc: 'OAuth 2.0 authentication with encrypted token storage in AWS infrastructure.',
-  },
-  {
-    Icon: Cloud,
-    title: 'Always available',
-    desc: 'Serverless architecture means zero downtime and infinite scalability.',
-    image: 'https://images.unsplash.com/photo-1739945634786-cb33a6884c73?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    Icon: Sliders,
-    title: 'Your voice',
-    desc: 'Customize the AI tone and style to match how you naturally describe your rides.',
-  },
-  {
-    Icon: BarChart3,
-    title: 'Data-driven',
-    desc: 'Leverages your complete activity history for increasingly personalized insights.',
-  },
-]
+];
 
 export default function Home() {
   return (
@@ -129,18 +88,12 @@ export default function Home() {
             className="max-w-3xl mx-auto text-center"
           >
             {/* Eyebrow */}
-            <motion.p
-              variants={fadeIn}
-              className="eyebrow mb-8"
-            >
+            <motion.p variants={fadeIn} className="eyebrow mb-8">
               AI-Powered Activity Descriptions
             </motion.p>
 
             {/* Main Headline */}
-            <motion.h1
-              variants={fadeInUp}
-              className="mb-8"
-            >
+            <motion.h1 variants={fadeInUp} className="mb-8">
               <span className="block font-display font-semibold text-5xl sm:text-6xl lg:text-7xl text-charcoal tracking-tight">
                 Every ride deserves
               </span>
@@ -154,12 +107,16 @@ export default function Home() {
               variants={fadeInUp}
               className="text-lg sm:text-xl text-slate max-w-xl mx-auto mb-12 leading-relaxed"
             >
-              Ride Scribe uses AI to automatically create compelling, personalized
-              descriptions for your Strava activities. Set it once, ride forever.
+              Ride Scribe uses AI to automatically create compelling,
+              personalized descriptions for your Strava activities. Set it once,
+              ride forever.
             </motion.p>
 
             {/* CTA Button */}
-            <motion.div variants={fadeInUp} className="flex flex-col items-center gap-6">
+            <motion.div
+              variants={fadeInUp}
+              className="flex flex-col items-center gap-6"
+            >
               <a
                 href={oauthUrl}
                 className="group inline-flex items-center gap-3 bg-sage text-white
@@ -199,7 +156,11 @@ export default function Home() {
           <div className="w-6 h-10 rounded-full border-2 border-mist flex items-start justify-center p-2">
             <motion.div
               animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
               className="w-1.5 h-1.5 rounded-full bg-sage"
             />
           </div>
@@ -247,7 +208,7 @@ export default function Home() {
                   >
                     {/* Step Number */}
                     <span className="inline-block font-display font-bold text-5xl text-sage/20 mb-3">
-                      {String(index + 1).padStart(2, '0')}
+                      {String(index + 1).padStart(2, "0")}
                     </span>
 
                     {/* Title */}
@@ -262,71 +223,6 @@ export default function Home() {
                   </motion.div>
                 ))}
               </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="bg-snow py-32 lg:py-40">
-        <div className="max-w-6xl mx-auto px-6 lg:px-8">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={staggerContainer}
-          >
-            {/* Section Header */}
-            <motion.div variants={fadeInUp} className="max-w-2xl mb-20">
-              <p className="eyebrow mb-4">Features</p>
-              <h2 className="font-display font-semibold text-4xl sm:text-5xl text-charcoal mb-6">
-                Intelligent by design
-              </h2>
-              <p className="text-lg text-slate leading-relaxed">
-                Built with care using advanced AI and secure cloud infrastructure.
-              </p>
-            </motion.div>
-
-            {/* Feature Cards Grid */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {features.map((feature) => (
-                <motion.div
-                  key={feature.title}
-                  variants={scaleIn}
-                  className={`group bg-warm-ivory rounded-2xl overflow-hidden
-                             transition-all duration-300 hover:-translate-y-1
-                             hover:shadow-medium ${feature.image ? '' : 'p-8'}`}
-                >
-                  {/* Image (if present) */}
-                  {feature.image && (
-                    <div className="h-40 overflow-hidden">
-                      <img
-                        src={feature.image}
-                        alt={feature.title}
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                      />
-                    </div>
-                  )}
-
-                  <div className={feature.image ? 'p-6' : ''}>
-                    {/* Icon */}
-                    <div className="w-12 h-12 rounded-full bg-sage/10 flex items-center justify-center mb-4
-                                    transition-colors duration-300 group-hover:bg-sage/20">
-                      <feature.Icon className="w-5 h-5 text-sage" />
-                    </div>
-
-                    {/* Title */}
-                    <h3 className="font-body font-semibold text-lg text-charcoal mb-2">
-                      {feature.title}
-                    </h3>
-
-                    {/* Description */}
-                    <p className="text-slate text-sm leading-relaxed">
-                      {feature.desc}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
             </div>
           </motion.div>
         </div>
@@ -363,7 +259,8 @@ export default function Home() {
               variants={fadeInUp}
               className="text-white/80 text-lg mb-12"
             >
-              Join cyclists who have reclaimed their time without sacrificing their stories.
+              Join cyclists who have reclaimed their time without sacrificing
+              their stories.
             </motion.p>
 
             <motion.div variants={fadeInUp}>
@@ -408,5 +305,5 @@ export default function Home() {
         </div>
       </footer>
     </div>
-  )
+  );
 }

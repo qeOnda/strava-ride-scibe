@@ -41,3 +41,25 @@ resource "aws_s3_bucket_policy" "web" {
 
   depends_on = [aws_s3_bucket_public_access_block.web]
 }
+
+resource "null_resource" "build_and_deploy" {
+  triggers = {
+    always_run = timestamp()
+  }
+
+  provisioner "local-exec" {
+    working_dir = "${path.module}/../web"
+    command     = <<-EOT
+      npm ci
+      NEXT_PUBLIC_STRAVA_CLIENT_ID=${var.strava_client_id} \
+      NEXT_PUBLIC_REDIRECT_URI=${var.base_url}/oauth-authentication \
+      npm run build
+    EOT
+  }
+
+  provisioner "local-exec" {
+    command = "aws s3 sync ${path.module}/../web/out s3://${aws_s3_bucket.web.id} --delete"
+  }
+
+  depends_on = [aws_s3_bucket_policy.web]
+}

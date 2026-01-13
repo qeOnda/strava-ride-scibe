@@ -52,19 +52,19 @@ const scaleIn = {
 const steps = [
   {
     title: "Connect once",
-    desc: "Secure OAuth authentication with your Strava account. Takes 30 seconds.",
+    desc: "Secure OAuth with your Strava account. Takes 30 seconds.",
   },
   {
     title: "Ride as usual",
-    desc: "No workflow changes needed. Just enjoy your rides.",
+    desc: "No workflow changes. Just ride.",
   },
   {
     title: "AI analyzes",
-    desc: "Distance, elevation, pace, and conditions are processed automatically.",
+    desc: "Power, pace, elevation, and effort are processed automatically.",
   },
   {
-    title: "Description updated`",
-    desc: "A personalized description updates on Strava within seconds.",
+    title: "Insights added",
+    desc: "A concise performance summary appears in your Strava description.",
   },
 ];
 
@@ -89,7 +89,7 @@ export default function Home() {
           >
             {/* Eyebrow */}
             <motion.p variants={fadeIn} className="eyebrow mb-8">
-              AI-Powered Activity Descriptions
+              AI-Powered Ride Analysis
             </motion.p>
 
             {/* Main Headline */}
@@ -98,7 +98,7 @@ export default function Home() {
                 Every ride deserves
               </span>
               <span className="block font-display font-bold text-5xl sm:text-6xl lg:text-7xl text-sage mt-2">
-                its story
+                a coach's eye
               </span>
             </motion.h1>
 
@@ -107,9 +107,9 @@ export default function Home() {
               variants={fadeInUp}
               className="text-lg sm:text-xl text-slate max-w-xl mx-auto mb-12 leading-relaxed"
             >
-              Ride Scribe uses AI to automatically create compelling,
-              personalized descriptions for your Strava activities. Set it once,
-              ride forever.
+              Ride Scribe adds a quick performance snapshot to your Strava
+              activities — power zones, pacing insights, and training notes,
+              analyzed automatically after every ride.
             </motion.p>
 
             {/* CTA Button */}
@@ -180,7 +180,7 @@ export default function Home() {
             <motion.div variants={fadeInUp} className="text-center mb-20">
               <p className="eyebrow mb-4">How it works</p>
               <h2 className="font-display font-semibold text-4xl sm:text-5xl text-charcoal">
-                Effortless automation
+                Effortless analysis
               </h2>
             </motion.div>
 
@@ -252,15 +252,15 @@ export default function Home() {
               variants={fadeInUp}
               className="font-display font-bold text-4xl sm:text-5xl lg:text-6xl text-white mb-8 leading-tight"
             >
-              Ready to let your rides speak for themselves?
+              Ready for insights on every ride?
             </motion.h2>
 
             <motion.p
               variants={fadeInUp}
               className="text-white/80 text-lg mb-12"
             >
-              Join cyclists who have reclaimed their time without sacrificing
-              their stories.
+              Join cyclists getting pro-level analysis without the pro-level
+              price tag.
             </motion.p>
 
             <motion.div variants={fadeInUp}>
@@ -288,7 +288,7 @@ export default function Home() {
                 Ride Scribe
               </p>
               <p className="text-stone text-sm mt-2">
-                AI-powered activity descriptions for Strava
+                AI-powered ride analysis for Strava
               </p>
             </div>
 

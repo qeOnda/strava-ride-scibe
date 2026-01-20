@@ -63,9 +63,4 @@ export const handleWebhookEvent = async ({
       body: JSON.stringify({ error: "Failed to process event" }),
     };
   }
-
-  return {
-    statusCode: 400,
-    body: JSON.stringify({ error: "Bad request" }),
-  };
 };

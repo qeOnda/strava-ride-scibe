@@ -1,6 +1,10 @@
-aws_bedrock_model_id=
-secret_key_hex=
-strava_client_id=
-strava_client_secret=
-strava_oauth_endpoint=
-system_prompt=
+aws_bedrock_model_id  = ""
+secret_key_hex        = ""
+strava_client_id      = ""
+strava_client_secret  = ""
+strava_oauth_endpoint = ""
+system_prompt         = ""
+certificate_arn       = ""
+domain                = ""
+hosted_zone_id        = ""
+strava_verify_token   = ""

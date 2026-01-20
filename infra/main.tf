@@ -24,6 +24,7 @@ resource "aws_lambda_function" "proxy_lambda_handler_function" {
       STRAVA_OAUTH_ENDPOINT = var.strava_oauth_endpoint
       TABLE_NAME            = aws_dynamodb_table.strava_descriptions_table.name
       AWS_REGION_VAR        = var.aws_region
+      VERIFY_TOKEN          = var.strava_verify_token
     }
   }
 }
@@ -105,21 +106,84 @@ resource "aws_iam_role_policy_attachment" "processor_lambda_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
-resource "aws_apigatewayv2_api" "lambda" {
-  name          = "api-gateway-${var.project_name}"
-  protocol_type = "HTTP"
+resource "aws_api_gateway_rest_api" "lambda" {
+  name = "api-gateway-${var.project_name}"
 }
 
-resource "aws_apigatewayv2_stage" "lambda" {
-  api_id = aws_apigatewayv2_api.lambda.id
+resource "aws_api_gateway_resource" "webhook" {
+  rest_api_id = aws_api_gateway_rest_api.lambda.id
+  parent_id   = aws_api_gateway_rest_api.lambda.root_resource_id
+  path_part   = "webhook"
+}
 
-  name        = "prod"
-  auto_deploy = true
+resource "aws_api_gateway_resource" "oauth_authentication" {
+  rest_api_id = aws_api_gateway_rest_api.lambda.id
+  parent_id   = aws_api_gateway_rest_api.lambda.root_resource_id
+  path_part   = "oauth-authentication"
+}
 
-  default_route_settings {
-    throttling_rate_limit  = 100
-    throttling_burst_limit = 200
+resource "aws_api_gateway_method" "webhook" {
+  rest_api_id   = aws_api_gateway_rest_api.lambda.id
+  resource_id   = aws_api_gateway_resource.webhook.id
+  http_method   = "ANY"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_method" "oauth_authentication" {
+  rest_api_id   = aws_api_gateway_rest_api.lambda.id
+  resource_id   = aws_api_gateway_resource.oauth_authentication.id
+  http_method   = "POST"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "webhook" {
+  rest_api_id             = aws_api_gateway_rest_api.lambda.id
+  resource_id             = aws_api_gateway_resource.webhook.id
+  http_method             = aws_api_gateway_method.webhook.http_method
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.proxy_lambda_handler_function.invoke_arn
+}
+
+resource "aws_api_gateway_integration" "oauth_authentication" {
+  rest_api_id             = aws_api_gateway_rest_api.lambda.id
+  resource_id             = aws_api_gateway_resource.oauth_authentication.id
+  http_method             = aws_api_gateway_method.oauth_authentication.http_method
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.proxy_lambda_handler_function.invoke_arn
+}
+
+resource "aws_api_gateway_deployment" "lambda" {
+  rest_api_id = aws_api_gateway_rest_api.lambda.id
+
+  triggers = {
+    redeployment = sha1(jsonencode([
+      aws_api_gateway_resource.webhook.id,
+      aws_api_gateway_resource.oauth_authentication.id,
+      aws_api_gateway_method.webhook.id,
+      aws_api_gateway_method.oauth_authentication.id,
+      aws_api_gateway_integration.webhook.id,
+      aws_api_gateway_integration.oauth_authentication.id,
+    ]))
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  depends_on = [
+    aws_api_gateway_method.webhook,
+    aws_api_gateway_method.oauth_authentication,
+    aws_api_gateway_integration.webhook,
+    aws_api_gateway_integration.oauth_authentication,
+  ]
+}
+
+resource "aws_api_gateway_stage" "lambda" {
+  deployment_id = aws_api_gateway_deployment.lambda.id
+  rest_api_id   = aws_api_gateway_rest_api.lambda.id
+  stage_name    = "prod"
 
   access_log_settings {
     destination_arn = aws_cloudwatch_log_group.api_gw.arn
@@ -135,44 +199,20 @@ resource "aws_apigatewayv2_stage" "lambda" {
       status                  = "$context.status"
       responseLength          = "$context.responseLength"
       integrationErrorMessage = "$context.integrationErrorMessage"
-      }
-    )
-  }
-}
-
-resource "aws_apigatewayv2_integration" "proxy_lambda_handler_function" {
-  api_id = aws_apigatewayv2_api.lambda.id
-
-  integration_uri    = aws_lambda_function.proxy_lambda_handler_function.invoke_arn
-  integration_type   = "AWS_PROXY"
-  integration_method = "POST"
-}
-
-resource "aws_apigatewayv2_route" "webhook" {
-  api_id = aws_apigatewayv2_api.lambda.id
-
-  route_key = "ANY /webhook"
-  target    = "integrations/${aws_apigatewayv2_integration.proxy_lambda_handler_function.id}"
-}
-
-resource "aws_apigatewayv2_route" "oauth_authentication" {
-  api_id = aws_apigatewayv2_api.lambda.id
-
-  route_key = "POST /oauth-authentication"
-  target    = "integrations/${aws_apigatewayv2_integration.proxy_lambda_handler_function.id}"
-}
-
-resource "aws_api_gateway_usage_plan" "main" {
-  name = "strava-ride-scribe-usage-plan"
-
-  throttle_settings {
-    rate_limit  = 100
-    burst_limit = 200
+    })
   }
 
-  quota_settings {
-    limit  = 10000
-    period = "DAY"
+  depends_on = [aws_api_gateway_account.main]
+}
+
+resource "aws_api_gateway_method_settings" "all" {
+  rest_api_id = aws_api_gateway_rest_api.lambda.id
+  stage_name  = aws_api_gateway_stage.lambda.stage_name
+  method_path = "*/*"
+
+  settings {
+    throttling_rate_limit  = 100
+    throttling_burst_limit = 200
   }
 }
 
@@ -182,7 +222,7 @@ resource "aws_lambda_permission" "api_gw" {
   function_name = aws_lambda_function.proxy_lambda_handler_function.function_name
   principal     = "apigateway.amazonaws.com"
 
-  source_arn = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+  source_arn = "${aws_api_gateway_rest_api.lambda.execution_arn}/*/*/*"
 }
 
 resource "aws_sqs_queue" "base_queue" {

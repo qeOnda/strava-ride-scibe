@@ -15,19 +15,22 @@ variable "aws_region" {
 variable "strava_client_id" {
   description = "Strava API Client ID."
 
-  type = string
+  type      = string
+  sensitive = true
 }
 
 variable "strava_client_secret" {
   description = "Strava API Client Secret."
 
-  type = string
+  type      = string
+  sensitive = true
 }
 
 variable "secret_key_hex" {
   description = "Hex encoded secret key for encryption."
 
-  type = string
+  type      = string
+  sensitive = true
 }
 
 variable "strava_oauth_endpoint" {
@@ -40,7 +43,7 @@ variable "lambda_timeout_seconds" {
   description = "Lambda timeout in seconds."
 
   type    = number
-  default = 100
+  default = 30
 }
 
 variable "aws_bedrock_model_id" {
@@ -53,4 +56,28 @@ variable "system_prompt" {
   description = "System prompt for the AI model."
 
   type = string
+}
+
+variable "certificate_arn" {
+  description = "ACM Certificate ARN for the custom domain"
+  type        = string
+  sensitive   = true
+}
+
+variable "domain" {
+  description = "Custom domain name for the web application"
+  type        = string
+  sensitive   = true
+}
+
+variable "hosted_zone_id" {
+  description = "Route 53 Hosted Zone ID for the custom domain"
+  type        = string
+  sensitive   = true
+}
+
+variable "strava_verify_token" {
+  description = "Strava webhook verification token"
+  type        = string
+  sensitive   = true
 }

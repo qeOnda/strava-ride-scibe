@@ -1,46 +1,91 @@
 resource "aws_s3_bucket" "web" {
-  bucket        = "web-${var.project_name}"
+  bucket        = var.s3_bucket_name
   force_destroy = true
 }
 
-resource "aws_s3_bucket_website_configuration" "web" {
-  bucket = aws_s3_bucket.web.id
+resource "aws_cloudfront_distribution" "web" {
+  enabled             = true
+  aliases             = [var.domain]
+  default_root_object = "index.html"
+  is_ipv6_enabled     = true
+  wait_for_deployment = true
 
-  index_document {
-    suffix = "index.html"
+  default_cache_behavior {
+    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
+    cached_methods         = ["GET", "HEAD", "OPTIONS"]
+    cache_policy_id        = "658327ea-f89d-4fab-a63d-7e88639e58f6"
+    target_origin_id       = aws_s3_bucket.web.bucket
+    viewer_protocol_policy = "redirect-to-https"
   }
 
-  error_document {
-    key = "404.html"
+  origin {
+    domain_name              = aws_s3_bucket.web.bucket_regional_domain_name
+    origin_access_control_id = aws_cloudfront_origin_access_control.web.id
+    origin_id                = aws_s3_bucket.web.bucket
+
+  }
+
+  viewer_certificate {
+    acm_certificate_arn      = var.certificate_arn
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2021"
+  }
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "none"
+    }
+  }
+
+  tags = {
+    Project = var.project_name
   }
 }
 
-resource "aws_s3_bucket_public_access_block" "web" {
-  bucket = aws_s3_bucket.web.id
+resource "aws_cloudfront_origin_access_control" "web" {
+  name                              = "s3-cloudfront-oac-${var.project_name}"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+}
 
-  block_public_acls       = false
-  block_public_policy     = false
-  ignore_public_acls      = false
-  restrict_public_buckets = false
+data "aws_iam_policy_document" "cloudfront_oac_access" {
+  statement {
+    principals {
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+
+    actions = [
+      "s3:GetObject"
+    ]
+
+    resources = ["${aws_s3_bucket.web.arn}/*"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+      values   = [aws_cloudfront_distribution.web.arn]
+    }
+  }
 }
 
 resource "aws_s3_bucket_policy" "web" {
   bucket = aws_s3_bucket.web.id
+  policy = data.aws_iam_policy_document.cloudfront_oac_access.json
+}
 
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid       = "PublicReadGetObject"
-        Effect    = "Allow"
-        Principal = "*"
-        Action    = "s3:GetObject"
-        Resource  = "${aws_s3_bucket.web.arn}/*"
-      }
-    ]
-  })
+resource "aws_route53_record" "main" {
+  name    = var.domain
+  type    = "A"
+  zone_id = var.hosted_zone_id
 
-  depends_on = [aws_s3_bucket_public_access_block.web]
+
+  alias {
+    evaluate_target_health = false
+    name                   = aws_cloudfront_distribution.web.domain_name
+    zone_id                = aws_cloudfront_distribution.web.hosted_zone_id
+  }
 }
 
 resource "null_resource" "build_and_deploy" {

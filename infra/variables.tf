@@ -15,19 +15,22 @@ variable "aws_region" {
 variable "strava_client_id" {
   description = "Strava API Client ID."
 
-  type = string
+  type      = string
+  sensitive = true
 }
 
 variable "strava_client_secret" {
   description = "Strava API Client Secret."
 
-  type = string
+  type      = string
+  sensitive = true
 }
 
 variable "secret_key_hex" {
   description = "Hex encoded secret key for encryption."
 
-  type = string
+  type      = string
+  sensitive = true
 }
 
 variable "strava_oauth_endpoint" {
@@ -40,7 +43,7 @@ variable "lambda_timeout_seconds" {
   description = "Lambda timeout in seconds."
 
   type    = number
-  default = 100
+  default = 30
 }
 
 variable "aws_bedrock_model_id" {

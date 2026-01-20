@@ -54,3 +54,21 @@ variable "system_prompt" {
 
   type = string
 }
+
+variable "certificate_arn" {
+  description = "ACM Certificate ARN for the custom domain"
+  type        = string
+  sensitive   = true
+}
+
+variable "domain" {
+  description = "Custom domain name for the web application"
+  type        = string
+  sensitive   = true
+}
+
+variable "hosted_zone_id" {
+  description = "Route 53 Hosted Zone ID for the custom domain"
+  type        = string
+  sensitive   = true
+}

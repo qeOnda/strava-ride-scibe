@@ -1,2 +1,6 @@
-strava_client_id = "your-strava-client-id-here"
-base_url         = "https://your-api-gateway-url.execute-api.region.amazonaws.com"
+strava_client_id = ""
+base_url         = ""
+s3_bucket_name   = ""
+domain           = ""
+hosted_zone_id   = ""
+certificate_arn  = ""

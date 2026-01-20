@@ -72,3 +72,9 @@ variable "hosted_zone_id" {
   type        = string
   sensitive   = true
 }
+
+variable "strava_verify_token" {
+  description = "Strava webhook verification token"
+  type        = string
+  sensitive   = true
+}

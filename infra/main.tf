@@ -24,6 +24,7 @@ resource "aws_lambda_function" "proxy_lambda_handler_function" {
       STRAVA_OAUTH_ENDPOINT = var.strava_oauth_endpoint
       TABLE_NAME            = aws_dynamodb_table.strava_descriptions_table.name
       AWS_REGION_VAR        = var.aws_region
+      VERIFY_TOKEN          = var.strava_verify_token
     }
   }
 }

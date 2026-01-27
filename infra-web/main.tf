@@ -3,6 +3,26 @@ resource "aws_s3_bucket" "web" {
   force_destroy = true
 }
 
+resource "aws_cloudfront_function" "uri_rewrite" {
+  name    = "${var.project_name}-uri-rewrite"
+  runtime = "cloudfront-js-2.0"
+  publish = true
+  code    = <<-EOF
+    function handler(event) {
+      var request = event.request;
+      var uri = request.uri;
+
+      if (uri.endsWith('/')) {
+        request.uri += 'index.html';
+      } else if (!uri.split('/').pop().includes('.')) {
+        request.uri += '.html';
+      }
+
+      return request;
+    }
+  EOF
+}
+
 resource "aws_cloudfront_distribution" "web" {
   enabled             = true
   aliases             = [var.domain]
@@ -16,6 +36,11 @@ resource "aws_cloudfront_distribution" "web" {
     cache_policy_id        = "658327ea-f89d-4fab-a63d-7e88639e58f6"
     target_origin_id       = aws_s3_bucket.web.bucket
     viewer_protocol_policy = "redirect-to-https"
+
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.uri_rewrite.arn
+    }
   }
 
   origin {

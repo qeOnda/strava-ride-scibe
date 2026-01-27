@@ -37,13 +37,15 @@ flowchart LR
 
 ```
 ├── lambda/
-│   ├── proxy/          # HTTP request handler
-│   └── processor/      # Async event processor
+│   ├── proxy/              # HTTP request handler (OAuth + webhooks)
+│   └── processor/          # Async event processor
 ├── lib/
-│   ├── encryption/     # AES-256-CBC token encryption
-│   ├── api-helper/     # Strava OAuth utilities
-│   └── lambda-layer/   # Shared dependencies
-└── infra/              # Terraform configuration
+│   ├── api-helper/         # Strava OAuth utilities
+│   ├── encryption/         # AES-256-CBC token encryption
+│   └── lambda-layer/       # Shared dependencies layer
+├── web/                    # Next.js landing page
+├── infra/                  # Terraform — API Gateway, Lambda, SQS, DynamoDB
+└── infra-web/              # Terraform — CloudFront, S3 for landing page
 ```
 
 ## Deployment

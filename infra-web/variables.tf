@@ -16,8 +16,8 @@ variable "strava_client_id" {
   sensitive   = true
 }
 
-variable "base_url" {
-  description = "Backend API Gateway base URL"
+variable "redirect_url" {
+  description = "Redirect URL for OAuth authentication"
   type        = string
 }
 

@@ -98,7 +98,7 @@ resource "null_resource" "build_and_deploy" {
     command     = <<-EOT
       npm ci
       NEXT_PUBLIC_STRAVA_CLIENT_ID=${var.strava_client_id} \
-      NEXT_PUBLIC_REDIRECT_URI=${var.base_url}/oauth-authentication \
+      NEXT_PUBLIC_REDIRECT_URI=${var.redirect_url} \
       npm run build
     EOT
   }

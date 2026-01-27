@@ -1,5 +1,5 @@
 strava_client_id = ""
-base_url         = ""
+redirect_url     = ""
 s3_bucket_name   = ""
 domain           = ""
 hosted_zone_id   = ""

@@ -7,6 +7,12 @@ import { encrypt } from "encryption";
 const SECRET_KEY_HEX = process.env.SECRE_KEY_HEX || "";
 const TABLE_NAME = process.env.TABLE_NAME || "";
 
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "https://ridescribe.click",
+  "Access-Control-Allow-Methods": "POST,OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
+
 type OAuthAuthenticationParam = {
   dynamodbClient: DynamoDBDocument;
   event: APIGatewayProxyEvent;
@@ -49,6 +55,7 @@ export const handleOAuthAuthentication = async ({
 
       return {
         statusCode: 200,
+        headers: CORS_HEADERS,
         body: JSON.stringify({ message: "OAuth authentication successful" }),
       };
     } catch (err) {
@@ -56,6 +63,7 @@ export const handleOAuthAuthentication = async ({
 
       return {
         statusCode: 500,
+        headers: CORS_HEADERS,
         body: JSON.stringify({ error: "Internal server error" }),
       };
     }
@@ -63,6 +71,7 @@ export const handleOAuthAuthentication = async ({
 
   return {
     statusCode: 400,
+    headers: CORS_HEADERS,
     body: JSON.stringify({ error: "Missing authorization code" }),
   };
 };

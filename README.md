@@ -1,4 +1,4 @@
-# Strava Ride Scribe
+# Strava RideScribe
 
 Serverless application that automatically generates Strava activity descriptions using AI.
 

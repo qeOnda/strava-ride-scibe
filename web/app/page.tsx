@@ -8,7 +8,7 @@ const STRAVA_CLIENT_ID = process.env.NEXT_PUBLIC_STRAVA_CLIENT_ID;
 const REDIRECT_URI = process.env.NEXT_PUBLIC_REDIRECT_URI || "";
 
 const oauthUrl = `https://www.strava.com/oauth/authorize?client_id=${STRAVA_CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(
-  REDIRECT_URI
+  REDIRECT_URI,
 )}&approval_prompt=force&scope=activity:write,activity:read_all`;
 
 // Refined animation variants - subtle and elegant
@@ -107,7 +107,7 @@ export default function Home() {
               variants={fadeInUp}
               className="text-lg sm:text-xl text-slate max-w-xl mx-auto mb-12 leading-relaxed"
             >
-              Ride Scribe adds a quick performance snapshot to your Strava
+              RideScribe adds a quick performance snapshot to your Strava
               activities — power zones, pacing insights, and training notes,
               analyzed automatically after every ride.
             </motion.p>
@@ -265,7 +265,7 @@ export default function Home() {
             {/* Logo */}
             <div className="text-center md:text-left">
               <p className="font-display font-bold text-2xl text-white">
-                Ride Scribe
+                RideScribe
               </p>
               <p className="text-stone text-sm mt-2">
                 AI-powered ride analysis for Strava

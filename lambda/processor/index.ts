@@ -33,12 +33,12 @@ export const handler = async (event: SQSEvent) => {
         new GetCommand({
           TableName: TABLE_NAME,
           Key: { UserId: body.owner_id, SK: `ACTIVITY#${body.object_id}` },
-        })
+        }),
       );
 
       if (response.Item) {
         console.log(
-          `## ACTIVITY ${body.object_id} EVENT ALREADY PROCESSED FOR USER ${body.owner_id}`
+          `## ACTIVITY ${body.object_id} EVENT ALREADY PROCESSED FOR USER ${body.owner_id}`,
         );
 
         // Skip to the next record
@@ -78,10 +78,11 @@ export const handler = async (event: SQSEvent) => {
 
         const expiresAt = data.expires_at.toString();
 
+        console.log("## STORING NEW TOKENS IN DYNAMODB");
         await dynamodbClient.put({
           TableName: TABLE_NAME,
           Item: {
-            UserId: NumberValue.from(data.athlete.id),
+            UserId: NumberValue.from(body.owner_id),
             SK: "METADATA",
             AccessToken: newAccessToken,
             RefreshToken: newRefreshToken,
@@ -107,7 +108,7 @@ export const handler = async (event: SQSEvent) => {
       if (!stravaResponse.ok) {
         const text = await stravaResponse.text().catch(() => "");
         console.log(
-          `Strava activity ${body.object_id} for user ${body.owner_id} fetch error ${stravaResponse.status}: ${text}`
+          `Strava activity ${body.object_id} for user ${body.owner_id} fetch error ${stravaResponse.status}: ${text}`,
         );
 
         // Skip to the next record
@@ -158,7 +159,7 @@ export const handler = async (event: SQSEvent) => {
       console.log("## GENERATED DESCRIPTION:", responseText);
 
       console.log(
-        `## STORING PROCESSED EVENT ACTIVITY#${body.object_id} IN DYNAMODB`
+        `## STORING PROCESSED EVENT ACTIVITY#${body.object_id} IN DYNAMODB`,
       );
 
       await dynamodbClient.put({
@@ -172,7 +173,7 @@ export const handler = async (event: SQSEvent) => {
       });
 
       console.log(
-        `## UPDATING EVENT DESCRIPTION FOR ACTIVITY#${body.object_id} IN STRAVA`
+        `## UPDATING EVENT DESCRIPTION FOR ACTIVITY#${body.object_id} IN STRAVA`,
       );
 
       await stravaRequest({
